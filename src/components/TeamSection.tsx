@@ -3,8 +3,8 @@ import { Github, Twitter } from "lucide-react";
 
 const team = [
   {
-    name: "Fundador",
-    role: "Desarrollo & Diseño de Bots",
+    name: "Hasbullero",
+    role: "Fundador · Desarrollo & Diseño de Bots",
     avatar: "🤖",
   },
   {
@@ -13,8 +13,8 @@ const team = [
     avatar: "⚔️",
   },
   {
-    name: "Desarrollador",
-    role: "Backend & Automatizaciones",
+    name: "Hasbullero",
+    role: "Desarrollador · Backend & Automatizaciones",
     avatar: "🛠️",
   },
 ];
