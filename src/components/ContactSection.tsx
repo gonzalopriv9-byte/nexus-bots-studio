@@ -94,7 +94,7 @@ const ContactSection = () => {
               onClick={() => setShowTemplate(true)}
               className="mt-6 inline-block rounded-lg bg-gradient-to-r from-primary to-secondary px-8 py-3.5 font-display text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all hover:shadow-xl hover:shadow-primary/30 hover:scale-105"
             >
-              Solicitar Presupuesto
+              Iniciar nueva era en tu servidor
             </button>
           </div>
         </motion.div>
