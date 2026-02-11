@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: nexusbotsudio
+    env: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: BOT_SECRET
+        sync: false
