@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Radio } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const navLinks = [
   { label: "Inicio", href: "#inicio" },
@@ -31,6 +32,15 @@ const Navbar = () => {
               </a>
             </li>
           ))}
+          <li>
+            <Link
+              to="/nexus"
+              className="flex items-center gap-2 rounded-lg bg-secondary px-5 py-2 text-sm font-semibold text-secondary-foreground transition-all hover:shadow-lg hover:shadow-secondary/25"
+            >
+              <Radio className="w-4 h-4" />
+              SERVIDORES ACTIVOS
+            </Link>
+          </li>
           <li>
             <a
               href="#contacto"
@@ -72,6 +82,16 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/nexus"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg bg-secondary px-5 py-2 text-sm font-semibold text-secondary-foreground transition-all"
+                >
+                  <Radio className="w-4 h-4" />
+                  SERVIDORES ACTIVOS
+                </Link>
+              </li>
             </ul>
           </motion.div>
         )}
