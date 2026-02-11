@@ -83,3 +83,8 @@
     border-image: linear-gradient(135deg, hsl(185 80% 55%), hsl(270 60% 55%)) 1;
   }
 }
+
+@keyframes gradient-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
