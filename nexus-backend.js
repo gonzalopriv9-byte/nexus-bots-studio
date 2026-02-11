@@ -1,49 +1,35 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
+// Añade estos endpoints a tu backend existente
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public")); // Para servir tu HTML
-
-// Almacenamiento en memoria de los datos de servidores
-const serverData = new Map();
-
-// Secret para autenticación
-const NEXUS_SECRET = process.env.NEXUS_SECRET || "espanoletes_super_secret_123";
+// Almacenamiento de datos de servidores
+const nexusServers = new Map();
 
 // ✅ Endpoint para recibir datos del bot
-app.post("/api/update-server", (req, res) => {
+app.post("/nexus/update-server", (req, res) => {
   const authHeader = req.headers.authorization;
   
-  // Verificar autenticación
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ error: "No autorizado" });
   }
   
   const token = authHeader.split(" ")[1];
-  if (token !== NEXUS_SECRET) {
+  const SECRET = process.env.BOT_SECRET || "espanoletes_super_secret_123";
+  
+  if (token !== SECRET) {
     return res.status(403).json({ error: "Token inválido" });
   }
 
   const data = req.body;
   
-  // Validar datos mínimos
   if (!data.botId || !data.serverName) {
     return res.status(400).json({ error: "Datos incompletos" });
   }
 
-  // Guardar datos
-  serverData.set(data.botId, {
+  nexusServers.set(data.botId, {
     ...data,
     lastUpdate: Date.now()
   });
 
-  console.log(`✅ Datos actualizados para bot ${data.botName}: ${data.memberCount} miembros`);
+  console.log(`✅ Datos Nexus actualizados: ${data.serverName} - ${data.memberCount} miembros`);
   
   res.json({ 
     success: true, 
@@ -51,19 +37,25 @@ app.post("/api/update-server", (req, res) => {
   });
 });
 
-// ✅ Endpoint para obtener datos de todos los servidores
-app.get("/api/servers", (req, res) => {
-  const servers = Array.from(serverData.values());
+// ✅ Endpoint para que Lovable consulte todos los servidores
+app.get("/nexus/servers", (req, res) => {
+  // Permitir CORS para Lovable
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET");
+  
+  const servers = Array.from(nexusServers.values());
   res.json({
     count: servers.length,
     servers: servers
   });
 });
 
-// ✅ Endpoint para obtener datos de un bot específico
-app.get("/api/server/:botId", (req, res) => {
+// ✅ Endpoint para obtener un servidor específico
+app.get("/nexus/server/:botId", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  
   const { botId } = req.params;
-  const data = serverData.get(botId);
+  const data = nexusServers.get(botId);
   
   if (!data) {
     return res.status(404).json({ error: "Bot no encontrado" });
@@ -72,26 +64,13 @@ app.get("/api/server/:botId", (req, res) => {
   res.json(data);
 });
 
-// ✅ Limpiar datos antiguos (más de 2 minutos sin actualizar)
+// ✅ Limpiar datos antiguos cada minuto
 setInterval(() => {
   const now = Date.now();
-  for (const [botId, data] of serverData.entries()) {
-    if (now - data.lastUpdate > 120000) { // 2 minutos
+  for (const [botId, data] of nexusServers.entries()) {
+    if (now - data.lastUpdate > 120000) { // 2 minutos sin actualizar
       console.log(`⚠️ Eliminando datos antiguos de bot ${botId}`);
-      serverData.delete(botId);
+      nexusServers.delete(botId);
     }
   }
-}, 60000); // Cada minuto
-
-// Health check
-app.get("/", (req, res) => {
-  res.json({
-    status: "online",
-    servers: serverData.size,
-    timestamp: new Date().toISOString()
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Backend de Nexus corriendo en puerto ${PORT}`);
-});
+}, 60000);
